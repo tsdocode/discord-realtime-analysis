@@ -32,7 +32,7 @@ Removed sections:
   <a href="">
     <img src="https://img.shields.io/github/last-commit/tsdocode/discord-realtime-analysis" alt="last update" />
   </a>
-  <a href="https://github.com/Louis3797/awesome-readme-template/stargazers">
+  <a href="https://github.com/tsdocode/discord-realtime-analysis/stargazers">
     <img src="https://img.shields.io/github/stars/tsdocode/discord-realtime-analysis" alt="stars" />
 </p>
    
