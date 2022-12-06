@@ -37,11 +37,11 @@ Removed sections:
 </p>
    
 <h4>
-    <a href="#Demo">Demo pictures</a>
+    <a href="#demo-picture">Demo picture</a>
   <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template">Run it yourself </a>
+    <a href="#run-locally">Run it yourself </a>
   <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template/issues/">About</a>
+    <a href="#contributer">About</a>
   </h4>
 </div>
 
