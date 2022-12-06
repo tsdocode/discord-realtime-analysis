@@ -220,7 +220,7 @@ def get_data():
 <!-- Contact -->
 ## Contact
 
-Thanh Sang - [@linkedin](https://linkedin.com/tsdocode) - tsdocode@gmail.com
+Thanh Sang - [@linkedin](https://www.linkedin.com/in/tsdocode/) - tsdocode@gmail.com
 
 
 <!-- Acknowledgments -->
