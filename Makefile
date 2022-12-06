@@ -1,3 +1,5 @@
+install:
+	pip install -r requirements.txt & pip install -e ./
 bot:
 	python discord_analysis/discord/bot.py
 dashboard:
