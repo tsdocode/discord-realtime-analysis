@@ -7,10 +7,18 @@ import random
 # from discord_analysis.ml.scripts.classify_pipeline import ClassificationPipeline
 from discord_analysis.ml.scripts.bilstm import predict
 from discord_analysis.firebase.db.realtime_db import RealtimeDB
+from discord_analysis.streaming.kafka import KafkaHandler
 from datetime import datetime
+from multiprocessing import Process
+from threading import Thread
+import json
 
 # classifier = ClassificationPipeline()
 db = RealtimeDB(os.getenv("FIREBASE_DB_URL"))
+kafka = KafkaHandler()
+
+current_sentiment = {}
+
 
 def sentiment(text):
     result = predict(text)
@@ -27,6 +35,14 @@ client = discord.Client(intents=discord.Intents.all())
 
 
 
+def on_message_handler(msgID, text):
+    global current_sentiment
+
+    print("Handling message " + str(msgID))
+    current_sentiment[msgID] = predict(text)
+
+
+
 @client.event
 async def on_ready():
     for guild in client.guilds:
@@ -40,6 +56,12 @@ async def on_ready():
         f'{client.user} is connected to the following guild:\n'
         f'{guild.name}(id: {guild.id})'
     )
+
+    consume_process = Thread(target=kafka.consume, kwargs={
+        "topic": "zfzdjzcz-discord",
+        "on_message_handler" : on_message_handler
+    })
+    consume_process.start()
 
 
 @client.event
@@ -78,24 +100,33 @@ async def on_message(message):
         deleted = await message.channel.purge(limit=10000)
         return
     text = message.content.lower()
-    text_sentiment = sentiment(text)
+
+    data = {
+        "msgID" : message.id,
+        "text" : text
+    }
+    kafka.produce("zfzdjzcz-discord", json.dumps(data))
+
+    # text_sentiment = sentiment(text)
+
+  
+
+    while message.id not in current_sentiment:
+        pass
+    
+    if current_sentiment[message.id] in ['Hate', 'Offensive']:
+        await message.add_reaction("😡")
+    else:
+        await message.add_reaction("❤️")
 
     db.push({
         "user" : message.author.name,
         'channel': message.channel.name,
         "content": message.content,
-        "sentiment":text_sentiment,
+        "sentiment":current_sentiment[message.id],
         "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }, "/server/message_log")
     
-    if text_sentiment in ['Hate', 'Offensive']:
-        await message.add_reaction("😡")
-        # mention = message.author.mention
-        # await message.channel.send(f"{mention} nói bậy là bị ban nhe <3")
-        
-        # await message.delete()
-    else:
-        await message.add_reaction("❤️")
 
 
 client.run(TOKEN)
